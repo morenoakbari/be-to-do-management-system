@@ -1,16 +1,20 @@
 require('dotenv').config();
 
-// import module & Declare variable
+// Import Module & Declare Variable
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+// Import DB Connection
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var taskRouter = require('./routes/task');
+var userTaskRouter = require('./routes/usertask');
 
-// create express
+// Create Express App
 var app = express();
 
 // view engine setup
@@ -21,13 +25,21 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Define route
+// Gretting route
 app.use('/', indexRouter);
+
+// Users API
 app.use('/users', usersRouter);
 
-// catch 404 and forward to error handler
+app.use('/task', taskRouter);
+
+app.use('/userTask', userTaskRouter);
+
+// Handle Error
 app.use(function (req, res, next) {
   next(createError(404));
 });
@@ -45,6 +57,8 @@ app.use(function (err, req, res) {
 
 // Set port
 const port = process.env.APP_PORT || 4000;
+
+const portCon = process.env.APP_PORT;
 
 // Start server
 app.listen(port, () => {
